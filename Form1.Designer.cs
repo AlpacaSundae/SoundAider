@@ -206,6 +206,7 @@
             notifyIcon.BalloonTipTitle = "im here waiting";
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
             notifyIcon.Text = "SoundAider";
+            notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
             // 
             // Form1
             // 
@@ -229,10 +230,10 @@
             Controls.Add(inputDropdown);
             Controls.Add(outputDropdown);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
             Text = "SoundAider";
             Load += Form1_Load;
-            MouseDoubleClick += Form1_MouseDoubleClick;
             MouseDown += Form1_MouseDown;
             Resize += Form1_Resize;
             ResumeLayout(false);

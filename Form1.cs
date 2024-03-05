@@ -184,7 +184,7 @@ namespace SoundAider
             }
         }
 
-        private void Form1_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
             notifyIcon.Visible = false;
