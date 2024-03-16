@@ -51,27 +51,39 @@ namespace SoundAider
 
         private void UpdateDropdowns()
         {
-            var inputDevices = controller.GetCaptureDevices(DeviceState.Active);
-            var outputDevices = controller.GetPlaybackDevices(DeviceState.Active);
-
-            inputDropdown.Items.Clear();
-            outputDropdown.Items.Clear();
-
-            foreach (var device in inputDevices)
+            MethodInvoker method = new MethodInvoker(delegate ()
             {
-                inputDropdown.Items.Add(device.FullName);
-            }
+                var inputDevices = controller.GetCaptureDevices(DeviceState.Active);
+                var outputDevices = controller.GetPlaybackDevices(DeviceState.Active);
 
-            foreach (var device in outputDevices)
+                inputDropdown.Items.Clear();
+                outputDropdown.Items.Clear();
+
+                foreach (var device in inputDevices)
+                {
+                    inputDropdown.Items.Add(device.FullName);
+                }
+
+                foreach (var device in outputDevices)
+                {
+                    outputDropdown.Items.Add(device.FullName);
+                }
+
+                inputDropdown.SelectedItem = defaultInputDevice;
+                inputDropdown.Text = defaultInputDevice.FullName;
+
+                outputDropdown.SelectedItem = defaultOutputDevice;
+                outputDropdown.Text = defaultOutputDevice.FullName;
+            });
+
+            if (inputDropdown.InvokeRequired)
             {
-                outputDropdown.Items.Add(device.FullName);
+                inputDropdown.Invoke(method);
             }
-
-            inputDropdown.SelectedItem = defaultInputDevice;
-            inputDropdown.Text = defaultInputDevice.FullName;
-
-            outputDropdown.SelectedItem = defaultOutputDevice;
-            outputDropdown.Text = defaultOutputDevice.FullName;
+            else
+            {
+                method();
+            }
         }
 
         private void DeviceStateChanged(DeviceChangedArgs args)
@@ -91,6 +103,11 @@ namespace SoundAider
 
                     // always update labels because we always want the labels to reflect the current default devices regardless of the synchronicity between them
                     UpdateLabels();
+                    break;
+                case DeviceChangedType.StateChanged:
+                    // state changed means: https://learn.microsoft.com/en-us/windows/win32/api/mmdeviceapi/nf-mmdeviceapi-immnotificationclient-ondevicestatechanged
+                    UpdateDefaultDevices();
+                    UpdateDropdowns();
                     break;
                 default:
                     MessageBox.Show("handler not implemented for: " + args.ChangedType + ", however event has been subscribed to", "DeviceStateChanged handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -189,6 +206,16 @@ namespace SoundAider
             Show();
             notifyIcon.Visible = false;
             this.WindowState = FormWindowState.Normal;
+        }
+
+        private void outputDropdown_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void defaultOutputDeviceLabel_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
