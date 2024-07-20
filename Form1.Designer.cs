@@ -47,6 +47,7 @@
             syncOutputCheckBox = new CheckBox();
             syncInputCheckBox = new CheckBox();
             notifyIcon = new NotifyIcon(components);
+            mousePositionTimer = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // outputDropdown
@@ -208,6 +209,10 @@
             notifyIcon.Text = "SoundAider";
             notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
             // 
+            // timer1
+            // 
+            mousePositionTimer.Tick += MousePositionTimer_Tick;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -232,9 +237,12 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "SoundAider";
             Load += Form1_Load;
             MouseDown += Form1_MouseDown;
+            MouseEnter += Form1_MouseEnter;
+            MouseLeave += Form1_MouseLeave;
             Resize += Form1_Resize;
             ResumeLayout(false);
             PerformLayout();
@@ -259,5 +267,6 @@
         private CheckBox syncOutputCheckBox;
         private CheckBox syncInputCheckBox;
         private NotifyIcon notifyIcon;
+        private System.Windows.Forms.Timer mousePositionTimer;
     }
 }

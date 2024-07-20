@@ -14,9 +14,13 @@ namespace SoundAider
         CoreAudioDevice defaultInputDevice;
         CoreAudioDevice defaultComInputDevice;
 
+        bool hasEntered = false;
+
         public Form1()
         {
             InitializeComponent();
+
+            this.WindowState = FormWindowState.Minimized;
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
@@ -112,7 +116,6 @@ namespace SoundAider
                 default:
                     MessageBox.Show("handler not implemented for: " + args.ChangedType + ", however event has been subscribed to", "DeviceStateChanged handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
-
             }
         }
 
@@ -198,14 +201,41 @@ namespace SoundAider
             {
                 Hide();
                 notifyIcon.Visible = true;
+                mousePositionTimer.Stop();
+            }
+        }
+
+        private void MousePositionTimer_Tick(object sender, EventArgs e)
+        {
+            var expansion = 48;
+            var expandedClientRectangle = new Rectangle(
+                ClientRectangle.X - expansion,
+                ClientRectangle.Y - expansion,
+                ClientRectangle.Width + expansion * 2,
+                ClientRectangle.Height + expansion * 2
+                );
+            if (!this.RectangleToScreen(expandedClientRectangle).Contains(Cursor.Position))
+            {
+                Hide();
+                notifyIcon.Visible = true;
+                mousePositionTimer.Stop();
             }
         }
 
         private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
-            notifyIcon.Visible = false;
             this.WindowState = FormWindowState.Normal;
+            var currentScreen = Screen.FromPoint(Cursor.Position);
+            this.Location = new Point(
+                // X: Centered on cursor OR fully within screen bounds
+                Math.Min(
+                    Cursor.Position.X - this.Width / 2,
+                    currentScreen.WorkingArea.Right - this.Width
+                    ),
+                // Y: Above taskbar with autohide
+                currentScreen.Bounds.Bottom - this.Height - 48
+                );
         }
 
         private void outputDropdown_SelectedIndexChanged(object sender, EventArgs e)
@@ -216,6 +246,16 @@ namespace SoundAider
         private void defaultOutputDeviceLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Form1_MouseEnter(object sender, EventArgs e)
+        {
+            mousePositionTimer.Stop();
+        }
+
+        private void Form1_MouseLeave(object sender, EventArgs e)
+        {
+            mousePositionTimer.Start();
         }
     }
 }
