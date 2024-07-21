@@ -48,6 +48,9 @@
             syncInputCheckBox = new CheckBox();
             notifyIcon = new NotifyIcon(components);
             mousePositionTimer = new System.Windows.Forms.Timer(components);
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            exitToolStripMenuItem = new ToolStripMenuItem();
+            contextMenuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // outputDropdown
@@ -207,17 +210,31 @@
             notifyIcon.BalloonTipTitle = "im here waiting";
             notifyIcon.Icon = (Icon)resources.GetObject("notifyIcon.Icon");
             notifyIcon.Text = "SoundAider";
-            notifyIcon.MouseDoubleClick += notifyIcon_MouseDoubleClick;
+            notifyIcon.MouseClick += notifyIcon_MouseClick;
             // 
-            // timer1
+            // mousePositionTimer
             // 
             mousePositionTimer.Tick += MousePositionTimer_Tick;
+            // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { exitToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(94, 26);
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(93, 22);
+            exitToolStripMenuItem.Text = "Exit";
+            exitToolStripMenuItem.Click += quitSoundAider;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(436, 203);
+            ControlBox = false;
             Controls.Add(syncInputCheckBox);
             Controls.Add(syncOutputCheckBox);
             Controls.Add(setBothInputButton);
@@ -237,13 +254,15 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "Form1";
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterScreen;
             Text = "SoundAider";
+            TopMost = true;
             Load += Form1_Load;
-            MouseDown += Form1_MouseDown;
             MouseEnter += Form1_MouseEnter;
             MouseLeave += Form1_MouseLeave;
             Resize += Form1_Resize;
+            contextMenuStrip1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -268,5 +287,7 @@
         private CheckBox syncInputCheckBox;
         private NotifyIcon notifyIcon;
         private System.Windows.Forms.Timer mousePositionTimer;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem exitToolStripMenuItem;
     }
 }

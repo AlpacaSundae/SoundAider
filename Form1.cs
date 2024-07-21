@@ -6,6 +6,7 @@ namespace SoundAider
 {
     public partial class Form1 : Form
     {
+        private const int windowExpandedHitbox = 32; // window closes when cursor is outside the window, expand the box on all sides by this amount
 
         CoreAudioController controller;
 
@@ -14,19 +15,14 @@ namespace SoundAider
         CoreAudioDevice defaultInputDevice;
         CoreAudioDevice defaultComInputDevice;
 
-        bool hasEntered = false;
-
         public Form1()
         {
             InitializeComponent();
 
+            this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Minimized;
-            this.ShowInTaskbar = false;
-        }
 
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-
+            this.notifyIcon.ContextMenuStrip = this.contextMenuStrip1;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -208,12 +204,11 @@ namespace SoundAider
 
         private void MousePositionTimer_Tick(object sender, EventArgs e)
         {
-            var expansion = 48;
             var expandedClientRectangle = new Rectangle(
-                ClientRectangle.X - expansion,
-                ClientRectangle.Y - expansion,
-                ClientRectangle.Width + expansion * 2,
-                ClientRectangle.Height + expansion * 2
+                ClientRectangle.X - windowExpandedHitbox,
+                ClientRectangle.Y - windowExpandedHitbox,
+                ClientRectangle.Width + windowExpandedHitbox * 2,
+                ClientRectangle.Height + windowExpandedHitbox * 2
                 );
             if (!this.RectangleToScreen(expandedClientRectangle).Contains(Cursor.Position))
             {
@@ -223,30 +218,23 @@ namespace SoundAider
             }
         }
 
-        private void notifyIcon_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void notifyIcon_MouseClick(object sender, MouseEventArgs e)
         {
-            Show();
-            this.WindowState = FormWindowState.Normal;
-            var currentScreen = Screen.FromPoint(Cursor.Position);
-            this.Location = new Point(
-                // X: Centered on cursor OR fully within screen bounds
-                Math.Min(
-                    Cursor.Position.X - this.Width / 2,
-                    currentScreen.WorkingArea.Right - this.Width
-                    ),
-                // Y: Above taskbar with autohide
-                currentScreen.Bounds.Bottom - this.Height - 48
-                );
-        }
-
-        private void outputDropdown_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void defaultOutputDeviceLabel_Click(object sender, EventArgs e)
-        {
-
+            if (e.Button == MouseButtons.Left)
+            {
+                Show();
+                this.WindowState = FormWindowState.Normal;
+                var currentScreen = Screen.FromPoint(Cursor.Position);
+                this.Location = new Point(
+                    // X: Centered on cursor OR fully within screen bounds
+                    Math.Min(
+                        Cursor.Position.X - this.Width / 2,
+                        currentScreen.WorkingArea.Right - this.Width
+                        ),
+                    // Y: Above taskbar with autohide
+                    currentScreen.Bounds.Bottom - this.Height - 48
+                    );
+            }
         }
 
         private void Form1_MouseEnter(object sender, EventArgs e)
@@ -257,6 +245,11 @@ namespace SoundAider
         private void Form1_MouseLeave(object sender, EventArgs e)
         {
             mousePositionTimer.Start();
+        }
+
+        private void quitSoundAider(object sender, EventArgs e)
+        {
+            this.Close();
         }
     }
 }
