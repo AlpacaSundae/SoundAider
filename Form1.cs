@@ -21,6 +21,7 @@ namespace SoundAider
             InitializeComponent();
 
             this.WindowState = FormWindowState.Minimized;
+            this.ShowInTaskbar = false;
         }
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
