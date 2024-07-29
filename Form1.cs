@@ -19,7 +19,7 @@ namespace SoundAider
         {
             InitializeComponent();
 
-            this.FormBorderStyle = FormBorderStyle.None;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.WindowState = FormWindowState.Minimized;
 
             this.notifyIcon.ContextMenuStrip = this.contextMenuStrip1;
@@ -111,7 +111,9 @@ namespace SoundAider
                     UpdateDropdowns();
                     break;
                 default:
+#if DEBUG
                     MessageBox.Show("handler not implemented for: " + args.ChangedType + ", however event has been subscribed to", "DeviceStateChanged handler", MessageBoxButtons.OK, MessageBoxIcon.Information);
+#endif
                     break;
             }
         }
